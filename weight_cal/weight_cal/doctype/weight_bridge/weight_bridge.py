@@ -125,14 +125,20 @@ class WeightBridge(Document):
     def get_actual_weight(self):
         self.actual_weight=self.loaded_weight-self.empty_weight
 
-    # @frappe.whitelist()
-    # def append_qty(self):
-    #   for i in self.items:
-    #       if str(i.item_group)=='Sugar':
-    #           i.qty=self.actual_weight
+    @frappe.whitelist()
+    def item_wgt_set(self):
+      for i in self.items:
+        #   if str(i.item_group)=='Sugar':
+            i.qty=self.actual_weight
     
 #-----------------------------------------------------------------------------------------------------------------
     @frappe.whitelist()
     def setamt(self):
         for i in self.get('items'):
             i.amount=i.qty*i.rate
+            
+    def before_submit(self):
+        if self.loaded_weight == 0 :
+            frappe.throw(" Gross Weight  0  Is Not Allow ......")
+        if self.empty_weight == 0:
+            frappe.throw(" Tear Weight 0  Is Not Allow ......")
